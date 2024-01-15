@@ -28,10 +28,19 @@ export async function POST(req: Request) {
   // Create a thread if needed
   const threadId = input.threadId ?? (await openai.beta.threads.create({})).id
 
+  let fet = await fetch('https://test.worldjewishtravel.org/wp-json/mycustom/v1/instruction/')
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
   // Add a message to the thread
+  let new_message = input.message + " " + fet;
+  
   const createdMessage = await openai.beta.threads.messages.create(threadId, {
     role: 'user',
-    content: input.message
+    content: new_message
   })
 
   return experimental_AssistantResponse(

@@ -43,6 +43,26 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
   const [previewTokenInput, setPreviewTokenInput] = useState(previewToken ?? '')
   const { status, messages, input, submitMessage, handleInputChange } =
     useAssistant({ api: '/api/assistant' })
+
+
+
+
+  function convertTextToLink(text) {
+    const regex = /\[([^\]]+)\]\(([^)]+)\)/g;
+    return text.replace(regex, '<a href="$2">$1</a>');
+  }
+
+  function removeBracketsText(text) {
+    const regex = /\【[^】]*\】/g;
+    return text.replace(regex, '');
+  }
+
+  function removeAsterisks(text) {
+    return text.replace(/\*/g, '');
+  }
+  
+
+
   return (
     <>
       <div className={cn('pb-[200px] pt-4 md:pt-10', className)}>
@@ -53,7 +73,8 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
             // style={{ color: roleToColorMap[m.role] }}
           >
             <strong>{`${m.role}: `}</strong>
-            {m.role !== 'data' && m.content}
+            {m.role !== 'data' &&
+            <div dangerouslySetInnerHTML={{ __html: convertTextToLink(removeBracketsText(removeAsterisks(m.content))) }} />}
             {m.role === 'data' && (
               <>
                 {/* here you would provide a custom display for your app-specific data:*/}

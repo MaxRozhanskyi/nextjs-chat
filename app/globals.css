@@ -76,3 +76,9 @@
     @apply bg-background text-foreground;
   }
 }
+a {
+  color: #00c2d8;
+  &:hover {
+    opacity: .7;
+   }
+}
