@@ -28,7 +28,7 @@ export async function POST(req: Request) {
   // Create a thread if needed
   const threadId = input.threadId ?? (await openai.beta.threads.create({})).id
 
-  let fet = await fetch('https://test.worldjewishtravel.org/wp-json/mycustom/v1/instruction/')
+  let fet = await fetch('https://dev.worldjewishtravel.org/wp-json/mycustom/v1/instruction/')
       .then(response => {
         if (!response.ok) {
           throw new Error('Network response was not ok');
