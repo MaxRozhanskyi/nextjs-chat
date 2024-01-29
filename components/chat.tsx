@@ -77,9 +77,9 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
 
 
 
-    console.log((window.location != window.parent.location)
-        ? document.referrer
-        : document.location.href)
+    // console.log((window.location != window.parent.location)
+    //     ? document.referrer
+    //     : document.location.href)
     return () => {
       window.removeEventListener('resize', updatePadding);
     };
