@@ -76,6 +76,8 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
     window.addEventListener('resize', updatePadding)
 
 
+    console.log(window.location)
+    console.log(window.parent.location)
     return () => {
       window.removeEventListener('resize', updatePadding);
     };
