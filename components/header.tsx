@@ -55,10 +55,12 @@ async function UserOrLogin() {
 export function Header() {
   return (
     <header className="sticky top-0 z-50 flex items-center justify-between w-full h-16 px-4 border-b shrink-0 bg-gradient-to-b from-background/10 via-background/50 to-background/80 backdrop-blur-xl">
-      <div className="flex items-center">
-        <React.Suspense fallback={<div className="flex-1 overflow-auto" />}>
-          <UserOrLogin />
-        </React.Suspense>
+      <div className="flex header-wrapper-main items-center">
+        {/*<React.Suspense fallback={<div className="flex-1 overflow-auto" />}>*/}
+        {/*  <UserOrLogin />*/}
+        {/*</React.Suspense>*/}
+          <h3>Ask Gil is an AI travel planning assistant, who combines our curated cultural travel collection with the power of ChatGPT.</h3>
+          <div className="header-content">Whilst we work hard to ensure answers are accurate, ChatGPT may sometimes produce inaccurate information.</div>
       </div>
       <div className="flex items-center justify-end space-x-2">
         {/* <a

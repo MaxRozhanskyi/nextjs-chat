@@ -20,11 +20,12 @@ import {
   DialogHeader,
   DialogTitle
 } from '@/components/ui/dialog'
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react';
 import { Button } from './ui/button'
 import { Input } from './ui/input'
 import { toast } from 'react-hot-toast'
 import { usePathname, useRouter } from 'next/navigation'
+import Image from "next/image";
 
 const IS_PREVIEW = process.env.VERCEL_ENV === 'preview'
 export interface ChatProps extends React.ComponentProps<'div'> {
@@ -58,169 +59,121 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
     return text.replace(/\*/g, '')
   }
 
+  const [linkClicked, setLinkClicked] = useState(false);
+  const wrapperRef = useRef(null);
+  const [bottomPadding, setBottomPadding] = useState('250px');
+
+  useEffect(() => {
+    const updatePadding = () => {
+      const wrapper = wrapperRef.current;
+      if (wrapper) {
+        const height = wrapper.offsetHeight; 
+        setBottomPadding(`${height}px`); 
+      }
+    };
+
+    updatePadding();
+    window.addEventListener('resize', updatePadding)
+
+
+    return () => {
+      window.removeEventListener('resize', updatePadding);
+    };
+  }, []);
+  
+  useEffect(() => {
+    const links = document.querySelectorAll('.wrapper-question .question');
+
+    const handleLinkClick = (event) => {
+      event.preventDefault();
+      const text = event.target.textContent;
+      handleInputChange({ target: { value: text } });
+      setLinkClicked(true); 
+    };
+
+    links.forEach(link => {
+      link.addEventListener('click', handleLinkClick);
+    });
+
+    return () => {
+      links.forEach(link => {
+        link.removeEventListener('click', handleLinkClick);
+      });
+    };
+  }, [handleInputChange]);
+
+  useEffect(() => {
+    if (linkClicked) {
+      submitMessage(new Event('submit'));
+      setLinkClicked(false); 
+    }
+  }, [linkClicked, submitMessage]);
+  
+  const getLinkClassName = (baseClass) => {
+    return `${baseClass} ${status !== 'awaiting_message' ? 'disabled' : ''}`;
+  };
+
   return (
     <>
-      <div className={cn('pb-[200px] pt-4 md:pt-10', className)}>
+      <div className={cn(' pt-4 md:pt-10', className)} style={{ paddingBottom: bottomPadding }}>
         {messages.map((m: Message) => (
           <div
             key={m.id}
-            className="whitespace-pre-wrap"
+            className="whitespace-pre-wrap message"
             // style={{ color: roleToColorMap[m.role] }}
           >
-            <strong>{`${m.role}: `}</strong>
-            {m.role !== 'data' && (
-              <div
-                dangerouslySetInnerHTML={{
-                  __html: convertTextToLink(
-                    removeBracketsText(removeAsterisks(m.content))
-                  )
-                }}
-              />
-            )}
-            {m.role === 'data' && (
-              <>
-                {/* here you would provide a custom display for your app-specific data:*/}
-                {(m.data as any).description}
-                <br />
-                <pre className={'bg-gray-200'}>
-                  {JSON.stringify(m.data, null, 2)}
-                </pre>
-              </>
-            )}
-            <br />
-            <br />
+            <img
+                className="icon-chat mr-4"
+                src={m.role === 'user' ? "/user-chat.PNG" : "/assistant-chat.PNG"}
+                alt={m.role}
+            />
+            <div className="flex-grow">
+              <strong className="text-black-600">{m.role === 'user' ? "User" : "Gil"}</strong>
+              {m.role !== 'data' && (
+                <div className="text-gray-800"
+                  dangerouslySetInnerHTML={{
+                    __html: convertTextToLink(
+                      removeBracketsText(removeAsterisks(m.content))
+                    )
+                  }}
+                />
+              )}
+              {m.role === 'data' && (
+                <>
+                  {/* here you would provide a custom display for your app-specific data:*/}
+                  {(m.data as any).description}
+                  <br />
+                  <pre className={'bg-gray-200'}>
+                    {JSON.stringify(m.data, null, 2)}
+                  </pre>
+                </>
+              )}
+              <br />
+          </div>
           </div>
         ))}
       </div>
       <form onSubmit={submitMessage}>
-        <input
-          disabled={status !== 'awaiting_message'}
-          className="fixed bottom-0 w-full max-w-md p-2 mb-8 border border-gray-300 rounded shadow-xl"
-          value={input}
-          placeholder="What is the temperature in the living room?"
-          onChange={handleInputChange}
-        />
+        <div className="fixed bottom-0 wrapper-form mb-8" ref={wrapperRef}>
+          <div className="wrapper-question">
+            <a className={getLinkClassName("question")} href="#">What sites can I see in two hours?</a>
+            <a className={getLinkClassName("question")} href="#">What hotels can you recommend?</a>
+            <a className={getLinkClassName("question")} href="#">Can you suggest where to eat?</a>
+            <a className={getLinkClassName("question")} href="#">What city tours are available?</a>
+            <a className={getLinkClassName("question")} href="#">What cultural events can I attend?</a>
+            <a className={getLinkClassName("question")} href="#">Tell me about any cultural days</a>
+          </div>
+          <input
+            disabled={status !== 'awaiting_message'}
+            className=" p-6   border border-gray-300 rounded"
+            value={input}
+            placeholder="Ask me your travel question…"
+            onChange={handleInputChange}
+          />
+          <button type="submit"></button>
+        </div>
       </form>
     </>
   )
 }
 
-// 'use client'
-
-// import { useChat, type Message } from 'ai/react'
-
-// import { cn } from '@/lib/utils'
-// import { ChatList } from '@/components/chat-list'
-// import { ChatPanel } from '@/components/chat-panel'
-// import { EmptyScreen } from '@/components/empty-screen'
-// import { ChatScrollAnchor } from '@/components/chat-scroll-anchor'
-// import { useLocalStorage } from '@/lib/hooks/use-local-storage'
-// import {
-//   Dialog,
-//   DialogContent,
-//   DialogDescription,
-//   DialogFooter,
-//   DialogHeader,
-//   DialogTitle
-// } from '@/components/ui/dialog'
-// import { useState } from 'react'
-// import { Button } from './ui/button'
-// import { Input } from './ui/input'
-// import { toast } from 'react-hot-toast'
-// import { usePathname, useRouter } from 'next/navigation'
-
-// const IS_PREVIEW = process.env.VERCEL_ENV === 'preview'
-// export interface ChatProps extends React.ComponentProps<'div'> {
-//   initialMessages?: Message[]
-//   id?: string
-// }
-
-// export function Chat({ id, initialMessages, className }: ChatProps) {
-//   const router = useRouter()
-//   const path = usePathname()
-//   const [previewToken, setPreviewToken] = useLocalStorage<string | null>(
-//     'ai-token',
-//     null
-//   )
-//   const [previewTokenDialog, setPreviewTokenDialog] = useState(IS_PREVIEW)
-//   const [previewTokenInput, setPreviewTokenInput] = useState(previewToken ?? '')
-//   const { messages, append, reload, stop, isLoading, input, setInput } =
-//     useChat({
-//       initialMessages,
-//       id,
-//       body: {
-//         id,
-//         previewToken
-//       },
-//       onResponse(response) {
-//         if (response.status === 401) {
-//           toast.error(response.statusText)
-//         }
-//       },
-//       onFinish() {
-//         if (!path.includes('chat')) {
-//           window.history.pushState({}, '', `/chat/${id}`)
-//         }
-//       }
-//     })
-//   return (
-//     <>
-//       <div className={cn('pb-[200px] pt-4 md:pt-10', className)}>
-//         {messages.length ? (
-//           <>
-//             <ChatList messages={messages} />
-//             <ChatScrollAnchor trackVisibility={isLoading} />
-//           </>
-//         ) : (
-//           <EmptyScreen setInput={setInput} />
-//         )}
-//       </div>
-//       <ChatPanel
-//         id={id}
-//         isLoading={isLoading}
-//         stop={stop}
-//         append={append}
-//         reload={reload}
-//         messages={messages}
-//         input={input}
-//         setInput={setInput}
-//       />
-
-//       <Dialog open={previewTokenDialog} onOpenChange={setPreviewTokenDialog}>
-//         <DialogContent>
-//           <DialogHeader>
-//             <DialogTitle>Enter your OpenAI Key</DialogTitle>
-//             <DialogDescription>
-//               If you have not obtained your OpenAI API key, you can do so by{' '}
-//               <a
-//                 href="https://platform.openai.com/signup/"
-//                 className="underline"
-//               >
-//                 signing up
-//               </a>{' '}
-//               on the OpenAI website. This is only necessary for preview
-//               environments so that the open source community can test the app.
-//               The token will be saved to your browser&apos;s local storage under
-//               the name <code className="font-mono">ai-token</code>.
-//             </DialogDescription>
-//           </DialogHeader>
-//           <Input
-//             value={previewTokenInput}
-//             placeholder="OpenAI API key"
-//             onChange={e => setPreviewTokenInput(e.target.value)}
-//           />
-//           <DialogFooter className="items-center">
-//             <Button
-//               onClick={() => {
-//                 setPreviewToken(previewTokenInput)
-//                 setPreviewTokenDialog(false)
-//               }}
-//             >
-//               Save Token
-//             </Button>
-//           </DialogFooter>
-//         </DialogContent>
-//       </Dialog>
-//     </>
-//   )
-// }
