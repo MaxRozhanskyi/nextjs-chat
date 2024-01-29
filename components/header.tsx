@@ -2,7 +2,7 @@ import * as React from 'react'
 import Link from 'next/link'
 
 import { cn } from '@/lib/utils'
-import { auth } from '@/auth'
+// import { auth } from '@/auth'
 import { clearChats } from '@/app/actions'
 import { Button, buttonVariants } from '@/components/ui/button'
 import { Sidebar } from '@/components/sidebar'
@@ -22,10 +22,10 @@ import { SidebarToggle } from './sidebar-toggle'
 import { ChatHistory } from './chat-history'
 
 async function UserOrLogin() {
-  const session = await auth()
+  // const session = await auth()
   return (
     <>
-      {session?.user ? (
+      {/* {session?.user ? (
         <>
           <SidebarMobile>
             <ChatHistory userId={session.user.id} />
@@ -37,7 +37,11 @@ async function UserOrLogin() {
           <IconNextChat className="w-6 h-6 mr-2 dark:hidden" inverted />
           <IconNextChat className="hidden w-6 h-6 mr-2 dark:block" />
         </Link>
-      )}
+      )} */}
+       <Link href="/" target="_blank" rel="nofollow">
+          <IconNextChat className="w-6 h-6 mr-2 dark:hidden" inverted />
+          <IconNextChat className="hidden w-6 h-6 mr-2 dark:block" />
+        </Link>
       <div className="flex items-center">
         {/* <IconSeparator className="w-6 h-6 text-muted-foreground/50" /> */}
         {/* {session?.user ? (
