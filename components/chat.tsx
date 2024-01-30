@@ -45,6 +45,16 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
   const { status, messages, input, submitMessage, handleInputChange } =
     useAssistant({ api: '/api/assistant' })
 
+  useEffect(() => {
+    const mainElement = document.getElementById('mainContent');
+    if (mainElement) {
+      if (status !== 'awaiting_message') {
+        mainElement.classList.add('hide-logo');
+      } 
+    }
+  }, [status]);
+
+
   function convertTextToLink(text: string) {
     const regex = /\[([^\]]+)\]\(([^)]+)\)/g
     return text.replace(regex, '<a href="$2">$1</a>')

@@ -194,6 +194,24 @@ form input{
 }
 main{
   overflow: hidden;
+  position: relative;
+}
+main:after{
+  content: "";
+  background-image: url("public/wjt-logo-blue.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  position: absolute;
+  width: 225px;
+  height: 130px;
+  top: 100px;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: .7;
+}
+main.hide-logo:after{
+  display: none;
 }
 .min-h-screen{
   max-height: 100vh;
