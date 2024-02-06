@@ -95,7 +95,10 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
       console.log(1)
     }else if (url === 'https://lab.worldjewishtravel.org/'){
       console.log(2)
+    } else if (url === 'https://test.worldjewishtravel.org/'){
+      console.log(3)
     }
+    
     return () => {
       window.removeEventListener('resize', updatePadding);
     };
