@@ -25,22 +25,14 @@ export async function POST(req: Request) {
     message: string
   } = await req.json()
 
+  const url = new URL(req.url);
+  const searchParams = new URLSearchParams(url.search);
+  const server_name = searchParams.get('value') || 'dev';
+  
   // Create a thread if needed
   const threadId = input.threadId ?? (await openai.beta.threads.create({})).id
-    
-    let url_fet = 'https://dev.worldjewishtravel.org/wp-json/mycustom/v1/instruction/'
-    let url = (window.location != window.parent.location)
-        ? document.referrer
-        : document.location.href;
-
-    if(url === 'https://dev.worldjewishtravel.org/'){
-        url_fet = 'https://dev.worldjewishtravel.org/wp-json/mycustom/v1/instruction/';
-    }else if (url === 'https://lab.worldjewishtravel.org/'){
-        url_fet = 'https://lab.worldjewishtravel.org/wp-json/mycustom/v1/instruction/';
-    } else if (url === 'https://test.worldjewishtravel.org/'){
-        url_fet = 'https://test.worldjewishtravel.org/wp-json/mycustom/v1/instruction/';
-    }
-    
+  
+    let url_fet = `https://${server_name}.worldjewishtravel.org/wp-json/mycustom/v1/instruction/`
 
     let fet = await fetch(url_fet)
       .then(response => {
@@ -49,6 +41,7 @@ export async function POST(req: Request) {
         }
         return response.json();
       })
+
   // Add a message to the thread
   let new_message = input.message + " " + fet;
   
@@ -60,10 +53,21 @@ export async function POST(req: Request) {
   return experimental_AssistantResponse(
     { threadId, messageId: createdMessage.id },
     async ({ threadId, sendMessage, sendDataMessage }) => {
+    
+        let assistant_url = `https://${server_name}.worldjewishtravel.org/wp-json/mycustom/v1/assistants_id/`
+       
+        let asist_id = await fetch(assistant_url)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+        
       // Run the assistant on the thread
       const run = await openai.beta.threads.runs.create(threadId, {
         assistant_id:
-          'asst_RNmSQfRxSyjwU6oAwQG9qENJ' ??
+            asist_id ??
           (() => {
             throw new Error('ASSISTANT_ID is not set')
           })()

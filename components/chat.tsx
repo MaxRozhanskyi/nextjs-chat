@@ -40,10 +40,11 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
     'ai-token',
     null
   )
+  const [previewServer, setPreviewServer] = useState('')
   const [previewTokenDialog, setPreviewTokenDialog] = useState(IS_PREVIEW)
   const [previewTokenInput, setPreviewTokenInput] = useState(previewToken ?? '')
   const { status, messages, input, submitMessage, handleInputChange } =
-    useAssistant({ api: '/api/assistant' })
+    useAssistant({ api: `/api/assistant?value=${previewServer}` })
 
   useEffect(() => {
     const mainElement = document.getElementById('mainContent');
@@ -85,7 +86,18 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
     updatePadding();
     window.addEventListener('resize', updatePadding)
 
+    let assistant_url = 'https://dev.worldjewishtravel.org/wp-json/mycustom/v1/assistants_id/'
+    let url = (window.location != window.parent.location) ? document.referrer : document.location.href;
 
+    if(url === 'https://dev.worldjewishtravel.org/'){
+      setPreviewServer('dev');
+    }else if (url === 'https://lab.worldjewishtravel.org/'){
+      setPreviewServer('lab');
+    } else if (url === 'https://test.worldjewishtravel.org/'){
+      setPreviewServer('test');
+    }else {
+      setPreviewServer('dev');
+    }
 
     
     return () => {
