@@ -93,11 +93,11 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
     
     if((window.location != window.parent.location)
         ? document.referrer
-        : document.location.href == 'dev.worldjewishtravel.org'){
+        : document.location.href == 'https://dev.worldjewishtravel.org/'){
       console.log(1)
     }else if ((window.location != window.parent.location)
         ? document.referrer
-        : document.location.href == 'lab.worldjewishtravel.org'){
+        : document.location.href === 'https://lab.worldjewishtravel.org/'){
       console.log(2)
     }
     return () => {
