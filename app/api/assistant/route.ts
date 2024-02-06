@@ -27,7 +27,20 @@ export async function POST(req: Request) {
 
   // Create a thread if needed
   const threadId = input.threadId ?? (await openai.beta.threads.create({})).id
-
+    console.log((window.location != window.parent.location)
+        ? document.referrer
+        : document.location.href)
+    if((window.location != window.parent.location)
+        ? document.referrer
+        : document.location.href == 'dev.worldjewishtravel.org'){
+        console.log(1)
+    }else if ((window.location != window.parent.location)
+        ? document.referrer
+        : document.location.href == 'lab.worldjewishtravel.org'){
+        console.log(2)
+    }
+    
+    
   let fet = await fetch('https://dev.worldjewishtravel.org/wp-json/mycustom/v1/instruction/')
       .then(response => {
         if (!response.ok) {
