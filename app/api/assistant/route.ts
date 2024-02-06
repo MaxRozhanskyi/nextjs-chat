@@ -27,21 +27,22 @@ export async function POST(req: Request) {
 
   // Create a thread if needed
   const threadId = input.threadId ?? (await openai.beta.threads.create({})).id
-    console.log((window.location != window.parent.location)
+    
+    let url_fet = 'https://dev.worldjewishtravel.org/wp-json/mycustom/v1/instruction/'
+    let url = (window.location != window.parent.location)
         ? document.referrer
-        : document.location.href)
-    if((window.location != window.parent.location)
-        ? document.referrer
-        : document.location.href == 'dev.worldjewishtravel.org'){
-        console.log(1)
-    }else if ((window.location != window.parent.location)
-        ? document.referrer
-        : document.location.href == 'lab.worldjewishtravel.org'){
-        console.log(2)
+        : document.location.href;
+
+    if(url === 'https://dev.worldjewishtravel.org/'){
+        url_fet = 'https://dev.worldjewishtravel.org/wp-json/mycustom/v1/instruction/';
+    }else if (url === 'https://lab.worldjewishtravel.org/'){
+        url_fet = 'https://lab.worldjewishtravel.org/wp-json/mycustom/v1/instruction/';
+    } else if (url === 'https://test.worldjewishtravel.org/'){
+        url_fet = 'https://test.worldjewishtravel.org/wp-json/mycustom/v1/instruction/';
     }
     
-    
-  let fet = await fetch('https://dev.worldjewishtravel.org/wp-json/mycustom/v1/instruction/')
+
+    let fet = await fetch(url_fet)
       .then(response => {
         if (!response.ok) {
           throw new Error('Network response was not ok');
