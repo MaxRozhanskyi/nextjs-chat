@@ -86,18 +86,14 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
     window.addEventListener('resize', updatePadding)
 
 
-
-    console.log((window.location != window.parent.location)
-        ? document.referrer
-        : document.location.href)
     
-    if((window.location != window.parent.location)
+    let url = (window.location != window.parent.location)
         ? document.referrer
-        : document.location.href == 'https://dev.worldjewishtravel.org/'){
+        : document.location.href;
+    
+    if(url === 'https://dev.worldjewishtravel.org/'){
       console.log(1)
-    }else if ((window.location != window.parent.location)
-        ? document.referrer
-        : document.location.href === 'https://lab.worldjewishtravel.org/'){
+    }else if (url === 'https://lab.worldjewishtravel.org/'){
       console.log(2)
     }
     return () => {
