@@ -76,6 +76,21 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
 
 
 
+
+
+
+  const handleInput = (data) => {
+    handleInputChange({ target: { value: data } });
+  };
+
+  const handleSubmitFromEvent = (data) => {
+    handleInput(data);
+    setTimeout(() => {
+      document.querySelector('form').dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+    }, 0); 
+  };
+
+
   const [isDisabled, setIsDisabled] = useState(false);
 
   const handleSubmit = (data) => {
@@ -85,6 +100,10 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
       setIsDisabled(false); 
     });
   };
+  
+  
+  
+  
 
 
   useEffect(() => {
@@ -128,7 +147,7 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
 
       if (event.data.type === 'formSubmit') {
         console.log('Полученные данные:', event.data.data);
-        handleSubmit(event.data.data);
+        handleSubmitFromEvent(event.data.data);
       }
     }
 
