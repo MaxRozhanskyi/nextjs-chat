@@ -74,6 +74,19 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
   const wrapperRef = useRef(null);
   const [bottomPadding, setBottomPadding] = useState('250px');
 
+
+
+  const [isDisabled, setIsDisabled] = useState(false);
+
+  const handleSubmit = (data) => {
+    handleInputChange({ target: { value: data } });
+    setIsDisabled(true); 
+    submitMessage(new Event('submit')).then(() => {
+      setIsDisabled(false); 
+    });
+  };
+
+
   useEffect(() => {
     const updatePadding = () => {
       const wrapper = wrapperRef.current;
@@ -106,7 +119,6 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
   }, []);
 
   useEffect(() => {
-    console.log(232)
     window.addEventListener('message', receiveMessage);
 
     function receiveMessage(event) {
@@ -116,6 +128,7 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
 
       if (event.data.type === 'formSubmit') {
         console.log('Полученные данные:', event.data.data);
+        handleSubmit(event.data.data);
       }
     }
 
@@ -206,13 +219,13 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
             <a className={getLinkClassName("question")} href="#">Tell me about any cultural days</a>
           </div>
           <input
-            disabled={status !== 'awaiting_message'}
+            disabled={isDisabled || status !== 'awaiting_message'}
             className=" p-6   border border-gray-300 rounded"
             value={input}
             placeholder="Ask me your travel question…"
             onChange={handleInputChange}
           />
-          <button type="submit"></button>
+          <button type="submit" disabled={isDisabled}></button>
         </div>
       </form>
     </>
