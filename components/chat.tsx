@@ -166,7 +166,6 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
       return;
 
     if (event.data.type === 'formSubmit') {
-      console.log('Полученные данные:', event.data.data);
       handleInputChange({ target: { value: event.data.data } });
       setLinkClicked(true);
     }
