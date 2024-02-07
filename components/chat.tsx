@@ -104,7 +104,25 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
       window.removeEventListener('resize', updatePadding);
     };
   }, []);
+
+  useEffect(() => {
+    console.log(232)
+    window.addEventListener('message', receiveMessage);
+
+    function receiveMessage(event) {
   
+      if (event.origin !== "https://dev.worldjewishtravel.org") 
+        return;
+
+      if (event.data.type === 'formSubmit') {
+        console.log('Полученные данные:', event.data.data);
+      }
+    }
+
+    return () => window.removeEventListener('message', receiveMessage);
+  }, []);
+
+
   useEffect(() => {
     const links = document.querySelectorAll('.wrapper-question .question');
 
