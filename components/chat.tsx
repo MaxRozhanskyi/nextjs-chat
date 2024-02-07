@@ -110,8 +110,8 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
     window.addEventListener('message', receiveMessage);
 
     function receiveMessage(event) {
-  
-      if (event.origin !== "https://dev.worldjewishtravel.org") 
+
+      if (event.origin !== "https://dev.worldjewishtravel.org" && event.origin !== "https://world33.loc")
         return;
 
       if (event.data.type === 'formSubmit') {
