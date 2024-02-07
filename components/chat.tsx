@@ -78,23 +78,25 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
 
 
 
-  const handleInput = (data) => {
-    handleInputChange({ target: { value: data } });
-  };
-  const handleSubmitFromEvent = (data) => {
-    handleInput(data);
+  
+  // const handleInput = (data) => {
+  //   handleInputChange({ target: { value: data } });
+  // };
+  // const handleSubmitFromEvent = (data) => {
+  //   handleInput(data);
+  //
+  //   submitMessage(); 
+  // };
+  // const [isDisabled, setIsDisabled] = useState(false);
 
-    submitMessage(); 
-  };
-  const [isDisabled, setIsDisabled] = useState(false);
-
-  const handleSubmit = (data) => {
-    handleInputChange({ target: { value: data } });
-    setIsDisabled(true); 
-    submitMessage(new Event('submit')).then(() => {
-      setIsDisabled(false); 
-    });
-  };
+  // const handleSubmit = (data) => {
+  //   handleInputChange({ target: { value: data } });
+  //   setIsDisabled(true); 
+  //   submitMessage(new Event('submit')).then(() => {
+  //     setIsDisabled(false); 
+  //   });
+  // };
+  
   
   
   
@@ -132,24 +134,56 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
     };
   }, []);
 
+  
+  
+  // useEffect(() => {
+  //   window.addEventListener('message', receiveMessage);
+  //
+  //   function receiveMessage(event) {
+  //
+  //     if (event.origin !== "https://dev.worldjewishtravel.org" && event.origin !== "https://world33.loc")
+  //       return;
+  //
+  //     if (event.data.type === 'formSubmit') {
+  //       console.log('Полученные данные:', event.data.data);
+  //       handleSubmitFromEvent(event.data.data);
+  //     }
+  //   }
+  //
+  //   return () => window.removeEventListener('message', receiveMessage);
+  // }, []);
+
   useEffect(() => {
     window.addEventListener('message', receiveMessage);
 
-    function receiveMessage(event) {
+    return () => {
+      window.removeEventListener('message', receiveMessage);
+    };
+  }, []); 
 
-      if (event.origin !== "https://dev.worldjewishtravel.org" && event.origin !== "https://world33.loc")
-        return;
+  function receiveMessage(event) {
+    if (event.origin !== "https://dev.worldjewishtravel.org" && event.origin !== "https://world33.loc")
+      return;
 
-      if (event.data.type === 'formSubmit') {
-        console.log('Полученные данные:', event.data.data);
-        handleSubmitFromEvent(event.data.data);
-      }
+    if (event.data.type === 'formSubmit') {
+      console.log('Полученные данные:', event.data.data);
+      handleInputChange({ target: { value: event.data.data } });
+      setLinkClicked(true);
     }
-
-    return () => window.removeEventListener('message', receiveMessage);
-  }, []);
+  }
 
 
+  useEffect(() => {
+    if (linkClicked) {
+      submitMessage(new Event('submit'));
+      setLinkClicked(false);
+    }
+  }, [linkClicked, submitMessage]);
+
+  
+
+  
+  
   useEffect(() => {
     const links = document.querySelectorAll('.wrapper-question .question');
 
@@ -233,13 +267,13 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
             <a className={getLinkClassName("question")} href="#">Tell me about any cultural days</a>
           </div>
           <input
-            disabled={isDisabled || status !== 'awaiting_message'}
+            disabled={status !== 'awaiting_message'}
             className=" p-6   border border-gray-300 rounded"
             value={input}
             placeholder="Ask me your travel question…"
             onChange={handleInputChange}
           />
-          <button type="submit" disabled={isDisabled}></button>
+          <button type="submit"></button>
         </div>
       </form>
     </>
