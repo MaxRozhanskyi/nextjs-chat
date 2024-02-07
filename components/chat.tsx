@@ -175,10 +175,15 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
 
   useEffect(() => {
     if (linkClicked) {
-      submitMessage(new Event('submit'));
-      setLinkClicked(false);
+      const timer = setTimeout(() => {
+        submitMessage(new Event('submit'));
+        setLinkClicked(false);
+      }, 100); 
+
+      return () => clearTimeout(timer);
     }
   }, [linkClicked, submitMessage]);
+
 
   
 
