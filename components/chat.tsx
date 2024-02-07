@@ -78,19 +78,14 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
 
 
 
-
   const handleInput = (data) => {
     handleInputChange({ target: { value: data } });
   };
-
   const handleSubmitFromEvent = (data) => {
     handleInput(data);
-    setTimeout(() => {
-      document.querySelector('form').dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
-    }, 0); 
+
+    submitMessage(); 
   };
-
-
   const [isDisabled, setIsDisabled] = useState(false);
 
   const handleSubmit = (data) => {
