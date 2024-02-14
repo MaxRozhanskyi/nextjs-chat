@@ -224,9 +224,9 @@ main:after{
   position: absolute;
   width: 225px;
   height: 130px;
-  top: 60px;
+  top: calc(50% - 175px);
   left: 50%;
-  transform: translateX(-50%);
+  transform: translate(-50%, -50%);
   opacity: .7;
 }
 main.hide-logo:after{
@@ -253,7 +253,7 @@ main.hide-logo:after{
   bottom: 0;
   left: -20px;
 }
-@media (max-width: 761px), screen and (max-height: 770px){
+@media (max-width: 761px), screen and (max-height: 670px){
   main:after{
     display: none;
   }
