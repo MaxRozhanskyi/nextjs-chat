@@ -182,6 +182,7 @@ form input{
 }
 .wrapper-question .question:hover{
   background-color: #d3d3d3;
+  opacity: 1;
 }
 .wrapper-question .question {
   display: block;
