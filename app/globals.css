@@ -252,7 +252,7 @@ main.hide-logo:after{
   bottom: 0;
   left: -20px;
 }
-@media (max-width: 761px), screen and (max-height: 790px){
+@media (max-width: 761px), screen and (max-height: 770px){
   main:after{
     display: none;
   }
